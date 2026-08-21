@@ -1,73 +1,122 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#081b2b">
-<title>Egleigeme</title>
+<!doctype html><html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#071522"><title>Egleigeme</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#071522;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 16px 90px}
-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-.brand{font-size:25px;font-weight:800}.sub{color:#8da0b2;font-size:12px}
-button{border:0;border-radius:14px;padding:11px 14px;background:#123149;color:white;font-weight:700}
-.hero{background:linear-gradient(145deg,#0c3147,#092033);border:1px solid #17445d;border-radius:24px;padding:22px;margin-bottom:14px}
-.label{color:#91a9ba;font-size:13px}.balance{font-size:36px;font-weight:800;margin:5px 0 15px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#0c2030;border:1px solid #17364a;border-radius:18px;padding:15px}.value{font-size:20px;font-weight:750;margin-top:5px}
-.section{margin:20px 0 10px;font-size:18px;font-weight:800}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{padding:15px;background:#0d2638;border:1px solid #173e54;border-radius:17px;text-align:center}
-nav{position:fixed;bottom:0;left:0;right:0;background:#071522ee;border-top:1px solid #17364a;padding:10px;display:flex;justify-content:center;gap:8px}
-nav button{font-size:12px}
-.modal{position:fixed;inset:0;background:#0009;display:none;align-items:end;justify-content:center}.sheet{width:min(520px,100%);background:#0b1d2c;border-radius:24px 24px 0 0;padding:20px}
-input,select{width:100%;padding:13px;border-radius:13px;border:1px solid #24455a;background:#071522;color:#fff;margin:7px 0 12px}
-.row{display:flex;gap:8px}.row>*{flex:1}.empty{color:#7890a3;text-align:center;padding:25px}
-</style>
-</head>
-<body>
-<div class="app">
-<header><div><div class="brand">Egleigeme</div><div class="sub">مديرك المالي الشخصي</div></div><button onclick="openSettings()">⚙️</button></header>
-<section class="hero"><div class="label">الرصيد الكلي</div><div class="balance" id="balance">0.00 MRU</div><div class="grid">
-<div><div class="label">الدخل</div><div class="value" id="income">0.00</div></div>
-<div><div class="label">المصروف</div><div class="value" id="expense">0.00</div></div></div></section>
-<div class="grid">
-<div class="card"><div class="label">💳 الحسابات</div><div class="value" id="accounts">0</div></div>
-<div class="card"><div class="label">🤝 الديون</div><div class="value" id="debts">0.00</div></div>
-<div class="card"><div class="label">📥 لك</div><div class="value" id="owed">0.00</div></div>
-<div class="card"><div class="label">🏠 الأصول</div><div class="value" id="assets">0.00</div></div>
-</div>
-<div class="section">إضافة سريعة</div>
-<div class="actions">
-<div class="action" onclick="openTx('income')">➕ دخل</div><div class="action" onclick="openTx('expense')">➖ مصروف</div>
-<div class="action" onclick="openTx('transfer')">🔄 تحويل</div><div class="action" onclick="openTx('asset')">🏠 أصل</div>
-</div>
-<div class="section">آخر المعاملات</div><div id="list" class="card empty">لا توجد معاملات بعد</div>
-</div>
-<nav><button onclick="openTx('income')">دخل</button><button onclick="openTx('expense')">مصروف</button><button onclick="showData()">البيانات</button></nav>
+.app{max-width:560px;margin:auto;padding:18px 15px 90px}.brand{font-size:26px;font-weight:800}.muted{color:#8ea4b5;font-size:12px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}button{border:0;border-radius:14px;padding:11px 14px;background:#102b3e;color:white;font-weight:700}
+.tabs{display:flex;gap:7px;overflow:auto;margin-bottom:14px}.tabs button{white-space:nowrap}.tabs .on{background:#1769aa}
+.hero,.card,.list{background:#0d2232;border:1px solid #1c4055;border-radius:20px}.hero{padding:21px;margin-bottom:12px}
+.balance{font-size:35px;font-weight:850;margin:5px 0 15px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{padding:15px}.value{font-size:19px;font-weight:800;margin-top:5px}.good{color:#63d69b}.bad{color:#ff7f7f}
+.section{font-size:18px;font-weight:850;margin:19px 0 10px}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{padding:16px;text-align:center}
+.list{overflow:hidden}.item{padding:13px 15px;border-bottom:1px solid #1c4055;display:flex;justify-content:space-between;gap:10px}.item:last-child{border:0}.empty{padding:28px;text-align:center;color:#8ea4b5}
+input,select{width:100%;padding:13px;border-radius:13px;border:1px solid #294b60;background:#071522;color:#fff;margin:7px 0 12px}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:flex-end;z-index:20}.sheet{width:min(560px,100%);background:#0b1d2c;border-radius:24px 24px 0 0;padding:20px;max-height:90vh;overflow:auto}.row{display:flex;gap:8px}.row>*{flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;background:#071522f2;border-top:1px solid #1c4055;padding:9px;display:flex;justify-content:center;gap:7px}nav button{font-size:12px}.hidden{display:none!important}
 
-<div class="modal" id="modal"><div class="sheet"><h2 id="title">إضافة معاملة</h2>
-<label>المبلغ</label><input id="amount" type="number" min="0" step="0.01" placeholder="0">
-<label>العملة</label><select id="currency"><option>MRU</option><option>USD</option><option>CNY</option><option>EUR</option><option>GBP</option><option>SAR</option><option>AED</option></select>
-<label>الوصف</label><input id="note" placeholder="مثال: راتب، مشتريات...">
-<div class="row"><button onclick="saveTx()">حفظ</button><button onclick="closeModal()">إلغاء</button></div>
-</div></div>
+.wallet-grid{display:grid;gap:11px}
+.wallet{background:#0d2232;border:1px solid #1c4055;border-radius:20px;padding:16px}
+.wallet-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wallet-icon{width:52px;height:52px;border-radius:14px;object-fit:cover;background:#fff;display:block;border:1px solid #294b60}
+.wallet-name{font-weight:850;font-size:17px}.wallet-balance{font-size:25px;font-weight:850;margin:12px 0 3px}
+.wallet-actions{display:flex;gap:7px;margin-top:12px}.wallet-actions button{flex:1;font-size:12px}
+.wallet-detail{background:#0d2232;border:1px solid #1c4055;border-radius:20px;padding:16px;margin-top:12px}
+.back{margin-bottom:10px}
+</style></head><body><div class="app">
+<header><div><div class="brand">Egleigeme</div><div class="muted">مديرك المالي الشخصي</div></div><button onclick="settings()">⚙️</button></header>
+<div class="tabs"><button class="on" onclick="page('home',this)">الرئيسية</button><button onclick="page('wallets',this)">تطبيقاتي</button><button onclick="page('accounts',this)">الحسابات</button><button onclick="page('debts',this)">الديون</button><button onclick="page('assets',this)">الممتلكات</button><button onclick="page('reports',this)">التقارير</button></div>
 
+<section id="home"><div class="hero"><div class="muted">صافي الحركة</div><div class="balance" id="bal">0.00 MRU</div><div class="grid"><div><div class="muted">الدخل</div><div class="value good" id="inc">0.00</div></div><div><div class="muted">المصروف</div><div class="value bad" id="exp">0.00</div></div></div></div>
+<div class="grid"><div class="card"><div class="muted">🏦 الحسابات</div><div class="value" id="ac">0</div></div><div class="card"><div class="muted">🤝 صافي الديون</div><div class="value" id="dn">0.00</div></div><div class="card"><div class="muted">📥 لك</div><div class="value" id="owed">0.00</div></div><div class="card"><div class="muted">🏠 الأصول</div><div class="value" id="ast">0.00</div></div></div>
+<div class="section">إضافة سريعة</div><div class="actions"><button class="action" onclick="tx('income')">➕ دخل</button><button class="action" onclick="tx('expense')">➖ مصروف</button><button class="action" onclick="tx('transfer')">🔄 تحويل</button><button class="action" onclick="debt()">🤝 دين</button><button class="action" onclick="asset()">🏠 ممتلك</button><button class="action" onclick="account()">🏦 حساب</button></div>
+<div class="section">آخر المعاملات</div><div id="recent" class="list empty">لا توجد معاملات بعد</div></section>
+
+
+<section id="wallets" class="hidden">
+  <div class="section">تطبيقاتي المالية <button onclick="walletAdd()">＋</button></div>
+  <div class="notice">كل تطبيق له رصيد ومعاملاته الخاصة. يمكنك تعديل الرصيد وإضافة عمليات يدوياً.</div>
+  <div id="walletCards" class="wallet-grid"></div>
+  <div id="walletDetails" class="hidden"></div>
+</section>
+<section id="accounts" class="hidden"><div class="section">حساباتي <button onclick="account()">＋</button></div><div id="accountsList" class="list empty">لا توجد حسابات.</div></section>
+<section id="debts" class="hidden"><div class="section">الديون <button onclick="debt()">＋</button></div><div id="debtsList" class="list empty">لا توجد ديون.</div></section>
+<section id="assets" class="hidden"><div class="section">الممتلكات <button onclick="asset()">＋</button></div><div id="assetsList" class="list empty">لا توجد أصول.</div></section>
+<section id="reports" class="hidden"><div class="section">التقارير</div><div class="grid"><div class="card"><div class="muted">صافي الحركة</div><div class="value" id="flow">0.00</div></div><div class="card"><div class="muted">صافي الثروة التقريبي</div><div class="value" id="worth">0.00</div></div></div><div class="section">النسخ الاحتياطي</div><div class="actions"><button onclick="exportData()">⬇️ تصدير</button><button onclick="document.getElementById('file').click()">⬆️ استيراد</button></div><input id="file" type="file" accept=".json" style="display:none" onchange="importData(event)"></section>
+</div><nav><button onclick="tx('income')">➕ دخل</button><button onclick="tx('expense')">➖ مصروف</button><button onclick="page('wallets')">💳 تطبيقاتي</button><button onclick="page('reports')">📊 تقارير</button></nav>
+<div class="modal" id="modal"><div class="sheet"><h2 id="title"></h2><div id="body"></div><div class="row"><button onclick="saveModal()">حفظ</button><button onclick="closeModal()">إلغاء</button></div></div></div>
 <script>
-const key="egleigeme_v01"; let data=JSON.parse(localStorage.getItem(key)||'{"base":"MRU","tx":[],"assets":0,"debts":0,"owed":0}');
-let mode="income";
-function money(n,c=data.base){return Number(n||0).toLocaleString('ar',{minimumFractionDigits:2,maximumFractionDigits:2})+" "+c}
-function render(){
- let inc=data.tx.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0), exp=data.tx.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);
- document.getElementById("balance").textContent=money(inc-exp); document.getElementById("income").textContent=money(inc);document.getElementById("expense").textContent=money(exp);
- document.getElementById("accounts").textContent=data.tx.length?1:0;document.getElementById("assets").textContent=money(data.assets);document.getElementById("debts").textContent=money(data.debts);document.getElementById("owed").textContent=money(data.owed);
- const list=document.getElementById("list"); if(!data.tx.length){list.className="card empty";list.textContent="لا توجد معاملات بعد";return}
- list.className="card"; list.innerHTML=data.tx.slice(-8).reverse().map((x,i)=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #17364a"><span>${x.type==="income"?"💰":x.type==="expense"?"💸":"🔄"} ${x.note||"معاملة"}</span><b>${x.type==="expense"?"-":"+"}${money(x.amount,x.currency)}</b></div>`).join("")
+const K="egleigeme_v02";let d=JSON.parse(localStorage.getItem(K)||'{"base":"MRU","accounts":[],"tx":[],"debts":[],"assets":[],"wallets":[]}');
+if(!Array.isArray(d.wallets)) d.wallets=[];
+const DEFAULT_WALLETS=[
+ {name:"بنكيلي",logo:"assets/bankily.jpeg",icon:"💳",balance:0,currency:"MRU"},
+ {name:"السداد",logo:"assets/sadad.jpeg",icon:"💵",balance:0,currency:"MRU"},
+ {name:"مصرفي",logo:"assets/masrafi.jpeg",icon:"🏦",balance:0,currency:"MRU"},
+ {name:"BIM Bank",logo:"assets/bim.jpeg",icon:"🏛️",balance:0,currency:"MRU"}
+];
+const LOGOS={"بنكيلي":"assets/bankily.jpeg","السداد":"assets/sadad.jpeg","مصرفي":"assets/masrafi.jpeg","BIM Bank":"assets/bim.jpeg","بيم بانك":"assets/bim.jpeg"};
+function logoFor(w){return w.logo||LOGOS[w.name]||""}
+if(!d.wallets.length){ d.wallets=DEFAULT_WALLETS.map(x=>({...x,tx:[]})); }
+d.wallets.forEach(w=>{if(!Array.isArray(w.tx))w.tx=[];if(!w.logo&&LOGOS[w.name])w.logo=LOGOS[w.name]});
+let mode="";
+const C=()=>'<option>MRU</option><option>USD</option><option>CNY</option><option>EUR</option><option>GBP</option><option>SAR</option><option>AED</option><option>JPY</option><option>CHF</option>';
+const F=(n,c=d.base)=>Number(n||0).toLocaleString("ar",{minimumFractionDigits:2,maximumFractionDigits:2})+" "+c;
+const S=(a,f)=>a.reduce((s,x)=>s+Number(f(x)||0),0);const E=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function save(){localStorage.setItem(K,JSON.stringify(d));render()}
+function page(id,b){document.querySelectorAll("section").forEach(x=>x.classList.add("hidden"));document.getElementById(id).classList.remove("hidden");if(b){document.querySelectorAll(".tabs button").forEach(x=>x.classList.remove("on"));b.classList.add("on")}}
+function open(t,title,body){mode=t;document.getElementById("title").textContent=title;document.getElementById("body").innerHTML=body;document.getElementById("modal").style.display="flex"}
+function closeModal(){document.getElementById("modal").style.display="none"}
+function tx(t){open(t,t==="income"?"إضافة دخل":t==="expense"?"إضافة مصروف":"إضافة تحويل",`<label>المبلغ</label><input id="a" type="number" step=".01"><label>العملة</label><select id="c">${C()}</select><label>الحساب</label><input id="acc" placeholder="نقد / بنك / بطاقة"><label>الوصف</label><input id="n" placeholder="مثال: راتب أو مشتريات">`)}
+function account(){open("account","إضافة حساب",`<label>اسم الحساب</label><input id="n" placeholder="نقد، بنك، بطاقة..."><label>النوع</label><select id="t"><option>نقد</option><option>بنك</option><option>بطاقة</option><option>محفظة</option><option>استثمار</option></select><label>الرصيد الافتتاحي</label><input id="a" type="number" value="0"><label>العملة</label><select id="c">${C()}</select>`)}
+function debt(){open("debt","إضافة دين",`<label>الشخص</label><input id="p"><label>النوع</label><select id="s"><option value="owed">لي</option><option value="owe">علي</option></select><label>المبلغ</label><input id="a" type="number" step=".01"><label>العملة</label><select id="c">${C()}</select><label>ملاحظة</label><input id="n">`)}
+function asset(){open("asset","إضافة ممتلك",`<label>اسم الممتلك</label><input id="n" placeholder="سيارة، عقار، ذهب..."><label>التصنيف</label><input id="t"><label>القيمة</label><input id="a" type="number" step=".01"><label>العملة</label><select id="c">${C()}</select>`)}
+function v(id){return document.getElementById(id)?.value||""}
+function saveModal(){let a=Number(v("a"));
+if(mode==="wallet"){let name=v("wn").trim();if(!name)return alert("اكتب اسم التطبيق");d.wallets.push({name,logo:LOGOS[name]||"",icon:v("wi")||"💳",balance:Number(v("wa")||0),currency:v("wc"),tx:[]});save();closeModal();return}
+if(mode==="wtx"){let i=window._walletIndex,amt=Number(v("xa"));if(!amt||amt<0)return alert("أدخل مبلغاً صحيحاً");let w=d.wallets[i];if(window._walletTxType==="out"&&amt>w.balance)return alert("المبلغ أكبر من الرصيد");w.balance += window._walletTxType==="in"?amt:-amt;w.tx.push({type:window._walletTxType,amount:amt,note:v("xn"),date:new Date().toLocaleString("ar")});save();closeModal();walletOpen(i);return}
+if(mode==="wedit"){let i=window._walletIndex;d.wallets[i].name=v("wn").trim()||d.wallets[i].name;d.wallets[i].icon=v("wi")||"💳";d.wallets[i].balance=Number(v("wa")||0);d.wallets[i].currency=v("wc");save();closeModal();walletOpen(i);return}
+if(mode==="account")d.accounts.push({name:v("n"),type:v("t"),balance:a,currency:v("c")});else if(mode==="debt"){if(!a)return alert("أدخل المبلغ");d.debts.push({person:v("p"),side:v("s"),remaining:a,currency:v("c"),note:v("n")})}else if(mode==="asset"){if(!a)return alert("أدخل القيمة");d.assets.push({name:v("n"),category:v("t"),value:a,currency:v("c")})}else{if(!a)return alert("أدخل المبلغ");d.tx.push({type:mode,amount:a,currency:v("c"),account:v("acc"),note:v("n"),date:new Date().toISOString()})}save();closeModal()}
+
+function walletAdd(){
+ open("wallet","إضافة تطبيق مالي",`<label>اسم التطبيق</label><input id="wn" placeholder="مثال: بنكيلي">
+ <label>الأيقونة</label><input id="wi" placeholder="💳">
+ <label>الرصيد الحالي</label><input id="wa" type="number" step=".01" value="0">
+ <label>العملة</label><select id="wc">${C()}</select>`);
 }
-function persist(){localStorage.setItem(key,JSON.stringify(data));render()}
-function openTx(t){mode=t;document.getElementById("title").textContent=t==="income"?"إضافة دخل":t==="expense"?"إضافة مصروف":t==="asset"?"إضافة أصل":"إضافة تحويل";document.getElementById("modal").style.display="flex"}
-function closeModal(){document.getElementById("modal").style.display="none";document.getElementById("amount").value="";document.getElementById("note").value=""}
-function saveTx(){let amount=Number(document.getElementById("amount").value),currency=document.getElementById("currency").value,note=document.getElementById("note").value;if(!amount)return alert("أدخل المبلغ");if(mode==="asset")data.assets+=amount;else data.tx.push({type:mode,amount,currency,note,date:new Date().toISOString()});persist();closeModal()}
-function openSettings(){let c=prompt("العملة الأساسية (MRU / USD / CNY...)","MRU");if(c){data.base=c.toUpperCase();persist()}}
-function showData(){alert("البيانات محفوظة محليًا على هذا الجهاز. النسخة الأولى تبدأ من الصفر ويمكن تطويرها لاحقًا.");}
+function walletOpen(i){
+ const w=d.wallets[i];
+ document.getElementById("walletCards").classList.add("hidden");
+ const box=document.getElementById("walletDetails"); box.classList.remove("hidden");
+ box.innerHTML=`<button class="back" onclick="walletClose()">← رجوع</button>
+ <div class="wallet-detail"><div class="wallet-head"><div><div class="wallet-name">${logoFor(w)?`<img class="wallet-icon" src="${logoFor(w)}" alt="${E(w.name)}">`:`<span class="wallet-icon">${E(w.icon||"💳")}</span>`} ${E(w.name)}</div><div class="muted">رصيد التطبيق</div></div>
+ <button onclick="walletEdit(${i})">✏️ تعديل</button></div>
+ <div class="wallet-balance">${F(w.balance,w.currency)}</div>
+ <div class="wallet-actions"><button onclick="walletTx(${i},'in')">➕ إيداع/دخل</button><button onclick="walletTx(${i},'out')">➖ سحب/مصروف</button></div></div>
+ <div class="section">المعاملات</div>
+ <div class="list">${w.tx.length?w.tx.slice().reverse().map(t=>`<div class="item"><span>${t.type==="in"?"🟢":"🔴"} ${E(t.note||"معاملة")}<div class="muted">${E(t.date||"")}</div></span><b class="${t.type==="out"?"bad":"good"}">${t.type==="out"?"-":"+"}${F(t.amount,w.currency)}</b></div>`).join(""):'<div class="empty">لا توجد معاملات لهذا التطبيق.</div>'}</div>`;
+}
+function walletClose(){document.getElementById("walletDetails").classList.add("hidden");document.getElementById("walletCards").classList.remove("hidden")}
+function walletTx(i,type){
+ open("wtx","إضافة معاملة",`<div class="notice">${E(d.wallets[i].name)} — الرصيد الحالي: <b>${F(d.wallets[i].balance,d.wallets[i].currency)}</b></div>
+ <label>المبلغ</label><input id="xa" type="number" min="0" step=".01">
+ <label>الوصف</label><input id="xn" placeholder="${type==="in"?"راتب، تحويل وارد...":"شراء، تحويل صادر..."}">`);
+ window._walletIndex=i; window._walletTxType=type;
+}
+function walletEdit(i){
+ const w=d.wallets[i];
+ open("wedit","تعديل التطبيق",`<label>اسم التطبيق</label><input id="wn" value="${E(w.name)}"><label>الأيقونة</label><input id="wi" value="${E(w.icon||"💳")}"><label>الرصيد الحالي</label><input id="wa" type="number" step=".01" value="${w.balance}"><label>العملة</label><select id="wc">${C()}</select>`);
+ window._walletIndex=i;
+ setTimeout(()=>{document.getElementById("wc").value=w.currency},0);
+}
+function render(){
+let wc=document.getElementById("walletCards");
+if(wc) wc.innerHTML=d.wallets.map((w,i)=>`<div class="wallet"><div class="wallet-head"><div><div class="wallet-name">${logoFor(w)?`<img class="wallet-icon" src="${logoFor(w)}" alt="${E(w.name)}">`:`<span class="wallet-icon">${E(w.icon||"💳")}</span>`} ${E(w.name)}</div><div class="muted">الرصيد الحالي</div></div><button onclick="walletOpen(${i})">فتح</button></div><div class="wallet-balance">${F(w.balance,w.currency)}</div><div class="muted">${w.tx.length} معاملة</div><div class="wallet-actions"><button onclick="walletTx(${i},'in')">➕ إضافة</button><button onclick="walletTx(${i},'out')">➖ خصم</button></div></div>`).join("");
+let i=S(d.tx,x=>x.type==="income"?x.amount:0),e=S(d.tx,x=>x.type==="expense"?x.amount:0),o=S(d.debts,x=>x.side==="owed"?x.remaining:0),q=S(d.debts,x=>x.side==="owe"?x.remaining:0),as=S(d.assets,x=>x.value);bal.textContent=F(i-e);inc.textContent=F(i);exp.textContent=F(e);ac.textContent=d.accounts.length;owed.textContent=F(o);dn.textContent=F(o-q);ast.textContent=F(as);flow.textContent=F(i-e);worth.textContent=F(i-e+o-q+as);
+recent.innerHTML=d.tx.length?d.tx.slice(-10).reverse().map(x=>`<div class="item"><span>${x.type==="income"?"💰":x.type==="expense"?"💸":"🔄"} ${E(x.note||"معاملة")}<div class="muted">${E(x.account||"")}</div></span><b class="${x.type==="expense"?"bad":"good"}">${x.type==="expense"?"-":"+"}${F(x.amount,x.currency)}</b></div>`).join(""):'<div class="empty">لا توجد معاملات بعد</div>';
+accountsList.innerHTML=d.accounts.length?d.accounts.map(x=>`<div class="item"><span>🏦 ${E(x.name)}<div class="muted">${E(x.type)} • ${E(x.currency)}</div></span><b>${F(x.balance,x.currency)}</b></div>`).join(""):'<div class="empty">لا توجد حسابات.</div>';
+debtsList.innerHTML=d.debts.length?d.debts.map(x=>`<div class="item"><span>${x.side==="owed"?"📥":"📤"} ${E(x.person)}<div class="muted">${x.side==="owed"?"لي":"علي"} • ${E(x.note||"")}</div></span><b>${F(x.remaining,x.currency)}</b></div>`).join(""):'<div class="empty">لا توجد ديون.</div>';
+assetsList.innerHTML=d.assets.length?d.assets.map(x=>`<div class="item"><span>🏠 ${E(x.name)}<div class="muted">${E(x.category||"")}</div></span><b>${F(x.value,x.currency)}</b></div>`).join(""):'<div class="empty">لا توجد أصول.</div>'}
+function settings(){let c=prompt("العملة الأساسية",d.base);if(c){d.base=c.toUpperCase();save()}}
+function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="egleigeme-backup.json";a.click()}
+function importData(e){let r=new FileReader();r.onload=()=>{try{d=JSON.parse(r.result);save();alert("تم الاستيراد")}catch{alert("ملف غير صالح")}};r.readAsText(e.target.files[0])}
 render();
-</script>
-</body></html>
+</script></body></html>
