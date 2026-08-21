@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#081b2b">
+<title>Egleigeme</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#071522;color:#f5f7fa;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.app{max-width:520px;margin:auto;min-height:100vh;padding:18px 16px 90px}
+header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.brand{font-size:25px;font-weight:800}.sub{color:#8da0b2;font-size:12px}
+button{border:0;border-radius:14px;padding:11px 14px;background:#123149;color:white;font-weight:700}
+.hero{background:linear-gradient(145deg,#0c3147,#092033);border:1px solid #17445d;border-radius:24px;padding:22px;margin-bottom:14px}
+.label{color:#91a9ba;font-size:13px}.balance{font-size:36px;font-weight:800;margin:5px 0 15px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.card{background:#0c2030;border:1px solid #17364a;border-radius:18px;padding:15px}.value{font-size:20px;font-weight:750;margin-top:5px}
+.section{margin:20px 0 10px;font-size:18px;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.action{padding:15px;background:#0d2638;border:1px solid #173e54;border-radius:17px;text-align:center}
+nav{position:fixed;bottom:0;left:0;right:0;background:#071522ee;border-top:1px solid #17364a;padding:10px;display:flex;justify-content:center;gap:8px}
+nav button{font-size:12px}
+.modal{position:fixed;inset:0;background:#0009;display:none;align-items:end;justify-content:center}.sheet{width:min(520px,100%);background:#0b1d2c;border-radius:24px 24px 0 0;padding:20px}
+input,select{width:100%;padding:13px;border-radius:13px;border:1px solid #24455a;background:#071522;color:#fff;margin:7px 0 12px}
+.row{display:flex;gap:8px}.row>*{flex:1}.empty{color:#7890a3;text-align:center;padding:25px}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><div class="brand">Egleigeme</div><div class="sub">مديرك المالي الشخصي</div></div><button onclick="openSettings()">⚙️</button></header>
+<section class="hero"><div class="label">الرصيد الكلي</div><div class="balance" id="balance">0.00 MRU</div><div class="grid">
+<div><div class="label">الدخل</div><div class="value" id="income">0.00</div></div>
+<div><div class="label">المصروف</div><div class="value" id="expense">0.00</div></div></div></section>
+<div class="grid">
+<div class="card"><div class="label">💳 الحسابات</div><div class="value" id="accounts">0</div></div>
+<div class="card"><div class="label">🤝 الديون</div><div class="value" id="debts">0.00</div></div>
+<div class="card"><div class="label">📥 لك</div><div class="value" id="owed">0.00</div></div>
+<div class="card"><div class="label">🏠 الأصول</div><div class="value" id="assets">0.00</div></div>
+</div>
+<div class="section">إضافة سريعة</div>
+<div class="actions">
+<div class="action" onclick="openTx('income')">➕ دخل</div><div class="action" onclick="openTx('expense')">➖ مصروف</div>
+<div class="action" onclick="openTx('transfer')">🔄 تحويل</div><div class="action" onclick="openTx('asset')">🏠 أصل</div>
+</div>
+<div class="section">آخر المعاملات</div><div id="list" class="card empty">لا توجد معاملات بعد</div>
+</div>
+<nav><button onclick="openTx('income')">دخل</button><button onclick="openTx('expense')">مصروف</button><button onclick="showData()">البيانات</button></nav>
+
+<div class="modal" id="modal"><div class="sheet"><h2 id="title">إضافة معاملة</h2>
+<label>المبلغ</label><input id="amount" type="number" min="0" step="0.01" placeholder="0">
+<label>العملة</label><select id="currency"><option>MRU</option><option>USD</option><option>CNY</option><option>EUR</option><option>GBP</option><option>SAR</option><option>AED</option></select>
+<label>الوصف</label><input id="note" placeholder="مثال: راتب، مشتريات...">
+<div class="row"><button onclick="saveTx()">حفظ</button><button onclick="closeModal()">إلغاء</button></div>
+</div></div>
+
+<script>
+const key="egleigeme_v01"; let data=JSON.parse(localStorage.getItem(key)||'{"base":"MRU","tx":[],"assets":0,"debts":0,"owed":0}');
+let mode="income";
+function money(n,c=data.base){return Number(n||0).toLocaleString('ar',{minimumFractionDigits:2,maximumFractionDigits:2})+" "+c}
+function render(){
+ let inc=data.tx.filter(x=>x.type==="income").reduce((s,x)=>s+x.amount,0), exp=data.tx.filter(x=>x.type==="expense").reduce((s,x)=>s+x.amount,0);
+ document.getElementById("balance").textContent=money(inc-exp); document.getElementById("income").textContent=money(inc);document.getElementById("expense").textContent=money(exp);
+ document.getElementById("accounts").textContent=data.tx.length?1:0;document.getElementById("assets").textContent=money(data.assets);document.getElementById("debts").textContent=money(data.debts);document.getElementById("owed").textContent=money(data.owed);
+ const list=document.getElementById("list"); if(!data.tx.length){list.className="card empty";list.textContent="لا توجد معاملات بعد";return}
+ list.className="card"; list.innerHTML=data.tx.slice(-8).reverse().map((x,i)=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #17364a"><span>${x.type==="income"?"💰":x.type==="expense"?"💸":"🔄"} ${x.note||"معاملة"}</span><b>${x.type==="expense"?"-":"+"}${money(x.amount,x.currency)}</b></div>`).join("")
+}
+function persist(){localStorage.setItem(key,JSON.stringify(data));render()}
+function openTx(t){mode=t;document.getElementById("title").textContent=t==="income"?"إضافة دخل":t==="expense"?"إضافة مصروف":t==="asset"?"إضافة أصل":"إضافة تحويل";document.getElementById("modal").style.display="flex"}
+function closeModal(){document.getElementById("modal").style.display="none";document.getElementById("amount").value="";document.getElementById("note").value=""}
+function saveTx(){let amount=Number(document.getElementById("amount").value),currency=document.getElementById("currency").value,note=document.getElementById("note").value;if(!amount)return alert("أدخل المبلغ");if(mode==="asset")data.assets+=amount;else data.tx.push({type:mode,amount,currency,note,date:new Date().toISOString()});persist();closeModal()}
+function openSettings(){let c=prompt("العملة الأساسية (MRU / USD / CNY...)","MRU");if(c){data.base=c.toUpperCase();persist()}}
+function showData(){alert("البيانات محفوظة محليًا على هذا الجهاز. النسخة الأولى تبدأ من الصفر ويمكن تطويرها لاحقًا.");}
+render();
+</script>
+</body></html>
